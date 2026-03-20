@@ -51,31 +51,108 @@ const products = [
   },
 ] as const
 
-const decisionSupport = {
-  Focus: {
-    bestWhen: ["Working", "Reading", "Early hours"],
+const productDetails = {
+  "tokyo-02": {
+    identity: "For staying with one thing.",
+    confirmation: "This is an easy one to trust.",
+    lowRisk: "You'll understand it quickly.",
+    feelingLines: [
+      "Starts close and clear",
+      "Holds your attention",
+      "Leaves before it lingers",
+    ],
+    selfMatch: [
+      "You want to stay in control",
+      "You don't want distraction",
+      "You need clarity without pressure",
+    ],
     texture: "Clean / Tight",
     finish: "Short",
   },
-  Lift: {
-    bestWhen: ["Starting out", "Open afternoons", "Moving quickly"],
-    texture: "Bright / Quick",
-    finish: "Clean",
-  },
-  Deep: {
-    bestWhen: ["Quiet nights", "Slow reading", "Settling in"],
+  "bali-01": {
+    identity: "For going inward without effort.",
+    confirmation: "This is an easy one to trust.",
+    lowRisk: "You'll understand it quickly.",
+    feelingLines: [
+      "Opens slowly",
+      "Pulls you inward",
+      "Stays after the middle",
+    ],
+    selfMatch: [
+      "You want to go deeper, not faster",
+      "You want less surface noise",
+      "You want something that stays with you",
+    ],
     texture: "Round / Close",
     finish: "Long",
   },
-  Soft: {
-    bestWhen: ["Unhurried mornings", "Long conversations", "Slower light"],
+  "seoul-03": {
+    identity: "For finding momentum without force.",
+    confirmation: "This is an easy one to trust.",
+    lowRisk: "You'll understand it quickly.",
+    feelingLines: [
+      "Arrives bright",
+      "Moves you forward",
+      "Finishes clean",
+    ],
+    selfMatch: [
+      "You want movement without heaviness",
+      "You want energy that stays readable",
+      "You want a lighter kind of focus",
+    ],
+    texture: "Bright / Quick",
+    finish: "Clean",
+  },
+  "taipei-01": {
+    identity: "For keeping the edges soft.",
+    confirmation: "This is an easy one to trust.",
+    lowRisk: "You'll understand it quickly.",
+    feelingLines: [
+      "Starts gently",
+      "Stays open through the middle",
+      "Leaves the room quiet",
+    ],
+    selfMatch: [
+      "You want less edge in the day",
+      "You want ease without blur",
+      "You want something open, not demanding",
+    ],
     texture: "Round / Light",
     finish: "Quiet",
   },
-  Dense: {
-    bestWhen: ["Deep work", "After dark", "Cold starts"],
+  "sydney-04": {
+    identity: "For wanting something that holds.",
+    confirmation: "This is an easy one to trust.",
+    lowRisk: "You'll understand it quickly.",
+    feelingLines: [
+      "Lands with weight",
+      "Stays compact through the middle",
+      "Keeps its shape at the end",
+    ],
+    selfMatch: [
+      "You want something that holds its ground",
+      "You want more presence, not more noise",
+      "You want weight that stays composed",
+    ],
     texture: "Compact / Heavy",
     finish: "Long",
+  },
+  "bangkok-02": {
+    identity: "For quick lift without drag.",
+    confirmation: "This is an easy one to trust.",
+    lowRisk: "You'll understand it quickly.",
+    feelingLines: [
+      "Rises quickly",
+      "Keeps things moving",
+      "Leaves clean and fast",
+    ],
+    selfMatch: [
+      "You want momentum without weight",
+      "You don't want to linger too long",
+      "You want a faster, cleaner shift",
+    ],
+    texture: "Quick / Light",
+    finish: "Short",
   },
 } as const
 
@@ -86,14 +163,6 @@ const intensityLabel = (intensity: number) => {
   if (intensity === 4) return "Medium / Full"
   return "Full"
 }
-
-const feelingLines = (feeling: string) =>
-  feeling
-    .replace(/\.$/, "")
-    .split(",")
-    .map((part) => part.trim())
-    .filter(Boolean)
-    .slice(0, 3)
 
 export function generateStaticParams() {
   return products.map((product) => ({
@@ -113,11 +182,11 @@ export default async function ProductPage({
     notFound()
   }
 
-  const details = decisionSupport[product.state]
+  const details = productDetails[product.id]
 
   return (
     <main className="min-h-screen bg-white px-6 py-16 text-black sm:py-20">
-      <div className="mx-auto flex max-w-[700px] flex-col items-center space-y-16">
+      <div className="mx-auto flex max-w-[640px] flex-col items-center space-y-16">
         <header className="space-y-4 text-center">
           <p className="text-xs uppercase tracking-[0.22em] text-black/45">
             Selected for how you want to feel
@@ -129,10 +198,12 @@ export default async function ProductPage({
               - {product.state}
             </span>
           </h1>
+
+          <p className="text-lg text-black/70">{details.identity}</p>
         </header>
 
         <section className="w-full space-y-5 text-center">
-          {feelingLines(product.feeling).map((line) => (
+          {details.feelingLines.map((line) => (
             <p
               key={line}
               className="text-2xl leading-tight text-black/88 sm:text-[2rem]"
@@ -144,22 +215,28 @@ export default async function ProductPage({
 
         <section className="w-full space-y-4 border-y border-black/10 py-8 text-center">
           <p className="text-sm uppercase tracking-[0.18em] text-black/45">
-            Best when
+            This fits when
           </p>
 
           <ul className="space-y-2 text-lg leading-snug">
-            {details.bestWhen.map((item) => (
+            {details.selfMatch.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
         </section>
 
-        <button
-          type="button"
-          className="w-full rounded-full border border-black bg-black px-6 py-4 text-sm uppercase tracking-[0.18em] text-white transition-colors hover:bg-white hover:text-black"
-        >
-          Start with this
-        </button>
+        <div className="w-full space-y-4 text-center">
+          <p className="text-base text-black/70">{details.confirmation}</p>
+
+          <button
+            type="button"
+            className="w-full rounded-full border border-black bg-black px-6 py-4 text-sm uppercase tracking-[0.18em] text-white transition-colors hover:bg-white hover:text-black"
+          >
+            Start with this
+          </button>
+
+          <p className="text-sm text-black/45">{details.lowRisk}</p>
+        </div>
 
         <section className="w-full space-y-4">
           <div className="grid grid-cols-[auto_1fr] gap-x-8 gap-y-3 text-sm sm:text-base">
